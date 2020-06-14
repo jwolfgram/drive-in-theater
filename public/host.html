@@ -1,0 +1,84 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>The HTML5 Herald</title>
+    <meta name="description" content="The HTML5 Herald">
+    <meta name="author" content="SitePoint">
+</head>
+
+<body>
+    <video controls width="250">
+        <source src="/video_stream?host=true" type="video/mp4">
+    
+        Sorry, your browser doesn't support embedded videos.
+    </video>
+    <h1>Connect to http://URL.com/779aggbs8</h1>
+    <button>Select MP4 to Play</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/socket.io-stream.js"></script>
+    <script>
+        // var vid = document.querySelector('video');
+
+
+        // setInterval(function(){ console.log(vid.currentTime) }, 3000);
+
+
+
+        
+        // var upTime = () => {
+        //     fetch(`/setVideoTime?time=${vid.currentTime}`)
+        //     // vid.currentTime = 5
+        // };
+        // vid.onplay = () => upTime();
+        // vid.onseeking = () => upTime();
+        function getBuffer(resolve) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var arrayBuffer = reader.result;
+                resolve(arrayBuffer);
+            }
+            reader.readAsArrayBuffer(fileData);
+        }
+
+        const audioContext = new(window.AudioContext || window.webkitAudioContext)();
+        fileData = new Blob([input.files[0]]);
+        const videoFileAsBuffer = new Promise(getBuffer);
+        videoFileAsBuffer.then(function (data) {
+            // ~~~~~~ can play video chunks directly to <video/>
+            audioContext.decodeAudioData(data).then(function (decodedAudioData) {
+                mySoundBuffer = decodedAudioData;
+                soundSource = audioContext.createBufferSource();
+                soundSource.buffer = mySoundBuffer; // ~~~~~ use this to stream through socketIO
+                // soundSource.connect(audioContext.destination);
+                // soundSource.start();
+                // ???? seems we might need...
+                var offlineAudioContext = new OfflineAudioContext(2, 44100 * 100, 44100);
+                offlineAudioContext.startRendering().then(function (renderedBuffer) {
+                    console.log(renderedBuffer); // outputs audiobuffer
+                    var song = audioContext.createBufferSource();
+                    song.buffer = renderedBuffer; // ~~~~~ maybe actually use this to stream through socketIO
+                    song.connect(audioContext.destination);
+                    song.start();
+                }).catch(function (err) {
+                    console.log('Rendering failed: ' + err);
+                });
+            });
+        });
+        // https://stackoverflow.com/questions/49140159/extracting-audio-from-a-video-file 
+
+        // Other thoughts....
+        // Clients might have to send their own latency to get a respective average time to expect audio to be offsync from what
+        // host sends clients... this is handled on the host since we are sending data from here.
+
+
+
+        ///// TESTING AREA ///////
+
+    </script>
+</body>
+
+</html>

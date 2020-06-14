@@ -1,0 +1,73 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>The HTML5 Herald</title>
+    <meta name="description" content="The HTML5 Herald">
+    <meta name="author" content="SitePoint">
+</head>
+
+<body>
+    <video controls width="0" height="0">
+        <source src="/video_stream" type="video/mp4">
+        Sorry, your browser doesn't support embedded videos.
+    </video>
+    <button>Listen Now!</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/socket.io-stream.js"></script>
+    <script>
+        // var createTimer = (initTime) => {
+        //     let start = Date.now();
+        //     const intTime = parseFloat(initTime)
+        //     const getTime = () => Date.now() - start;
+
+        //     return {
+        //         getTime: () => ((getTime() / 1000) + intTime).toString(),
+        //         setLatency: (secs) => {
+                    
+        //         }
+        //     }
+        // }
+        // var timer;
+        // var latTimer;
+
+        // var btn = document.querySelector('button');
+        // btn.addEventListener('click', () => {
+        //     const t = timer.getTime()
+        //     console.log(t)
+        //     vid.currentTime = t;
+        //     vid.play();
+        // })
+
+        // var vid = document.querySelector('video');
+
+
+        // setInterval(function(){ console.log(vid.currentTime) }, 3000);
+
+        // latTimer = createTimer(0);
+        // fetch('/videoTime').then((res) => res.text()).then((vidTime) => {
+        //     const t = parseFloat(latTimer.getTime())
+        //     const vTime = parseFloat(vidTime)
+        //     console.log(`t: ${typeof t}`)
+        //     timer = createTimer(vTime + t);
+        //     // vid.currentTime = vidTime;
+        //     // vid.play();
+        // }).catch((e) => {
+        //     console.log(e)
+        // })
+
+        ///// TESTING AREA ///////
+
+        var socket = io.connect('/');
+
+        socket.on('connect', function() {
+        console.log('Connected!');
+        });
+
+    </script>
+</body>
+
+</html>
