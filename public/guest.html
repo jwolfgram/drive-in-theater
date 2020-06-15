@@ -18,8 +18,8 @@
         <audio src="" controls></audio>
         <button>Listen Now!</button>
     </div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/socket.io-stream.js"></script>
+    <script src="peerjs.min.js"></script>
+    <script src=""></script>
     <script>
         var createTimer = (initTime) => {
             let start = Date.now();
@@ -44,6 +44,8 @@
             // vid.currentTime = t;
             // vid.play();
             getAudioFromHost('090909');
+            // remove code input view
+            // show volume view
         })
 
         // latTimer = createTimer(0);
