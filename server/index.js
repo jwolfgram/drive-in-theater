@@ -3,20 +3,24 @@ var port = '8080',
   app = express(),
   ExpressPeerServer = require('peer').ExpressPeerServer,
   peerServer = ExpressPeerServer(server,{
-      path: '/connect'
+    debug: 3
   }),
   server = require('http').createServer(app),
   path = require('path'),
   bodyParser = require('body-parser');
 
 
-  server.on('connection', (client) => {
-    console.log(Object.keys(client))
-    console.log(client._hadError)
-    console.log(client.connecting)
-   });
+  // server.on('connection', (client) => {
+  //   console.log(Object.keys(client))
+  //   console.log(client._hadError)
+  //   console.log(client.connecting)
+  //  });
 // peerjs is the path that the peerjs server will be connected to.
 app.use('/peerjs', ExpressPeerServer(server));
 app.use('/', express.static('../public'));
 // Now listen to your ip and port.
 server.listen(8080);
+
+peerServer.on('connection', function (id) {
+  console.log('user with ', id, 'connected');
+});

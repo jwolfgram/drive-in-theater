@@ -18,9 +18,9 @@
     </video>
     <h1>Connect to http://URL.com/779aggbs8</h1>
     <button>Select MP4 to Play</button>
-    <script src="/peerjs.min.js"></script>
+    <script src="peerjs.min.js"></script>
     <script>
-        // var vid = document.querySelector('video');
+        var vid = document.querySelector('video');
 
 
         // setInterval(function(){ console.log(vid.currentTime) }, 3000);
@@ -34,14 +34,14 @@
         // };
         // vid.onplay = () => upTime();
         // vid.onseeking = () => upTime();
-        // function getBuffer(resolve) {
-        //     var reader = new FileReader();
-        //     reader.onload = function () {
-        //         var arrayBuffer = reader.result;
-        //         resolve(arrayBuffer);
-        //     }
-        //     reader.readAsArrayBuffer(fileData);
-        // }
+        function getBuffer(resolve) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var arrayBuffer = reader.result;
+                resolve(arrayBuffer);
+            }
+            reader.readAsArrayBuffer(fileData);
+        }
 
         // const audioContext = new(window.AudioContext || window.webkitAudioContext)();
         // fileData = new Blob([input.files[0]]);
@@ -76,21 +76,62 @@
 
 
         ///// TESTING AREA ///////
-        var makeID = () => (Math.random().toString(36).substr(2,6)).toUpperCase();
-        var peer = new Peer("090909",{host: '/', path: '/peerjs', port: 8080});
-        peer.on('open', function(id){
-            console.log(id)
-        });
+        const makeID = () => (Math.random().toString(36).substr(2,6)).toUpperCase();
+        const peer = new Peer("090909",{host: 'localhost', path: '/peerjs', port: 8080, debug: 0}); // later set to makeID for differnet movie sessions
+        let clientConnection;
         peer.on('error', console.log)
-        peer.on('connection', function(conn) {
-            debugger
-            conn.send('hi!');
-            conn.on('data', function(data){
-                // Will print 'hi!'
-                console.log('GOT THE FOLLOWING...')
-                console.log(data);
-            });
+        peer.on('open', function(id){
+            console.log(id) // display this id for connection id, this is called once established with server and avalible for guests
         });
+        peer.on('connection', function(conn) {
+            console.log('got connection, now send movei....')
+            sendAudio(conn) // sendVideo will send current audio stream or hold clinets to send the audio stream.. is conn only one or all clients connected?
+        });
+
+        const sendAudio = () => {
+            // if does audio and current video stream exsist, then send else need to put in que to send to clients
+            var audioContext = new(window.AudioContext || window.webkitAudioContext)();
+            fileData = new Blob([input.files[0]]); // get file
+            var videoFileAsBuffer = new Promise(getBuffer);
+
+            var offlineAudioContext = new OfflineAudioContext(2, 44100 * 100, 44100);
+            var soundSource = offlineAudioContext.createBufferSource();
+
+
+            videoFileAsBuffer.then(function (data) {
+                // vidoe testing...
+                const vidUrl = URL.createObjectURL(blob);
+                vid.src = vidUrl;
+                // maybe the above will work???
+
+                audioContext.decodeAudioData(data).then(function (decodedAudioData) {
+                    mySoundBuffer = decodedAudioData;
+                    soundSource = audioContext.createBufferSource();
+                    soundSource.buffer = mySoundBuffer;
+                    // soundSource.connect(audioContext.destination);
+                    // soundSource.start();
+                }); 
+                soundSource.connect(offlineAudioContext.destination);
+                soundSource.start();
+                offlineAudioContext.startRendering().then(function (renderedBuffer) {
+                    console.log(renderedBuffer); // outputs audiobuffer
+                    var song = audioContext.createBufferSource();
+                    song.buffer = renderedBuffer;
+                    song.connect(audioContext.destination);
+                    song.start();
+                }).catch(function (err) {
+                    console.log('Rendering failed: ' + err);
+                });
+            });
+        }
+
+        const playVideo = () => {
+
+        }
+
+
+
+
 
     </script>
 </body>

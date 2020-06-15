@@ -16,7 +16,7 @@
         Sorry, your browser doesn't support embedded videos.
     </video>
     <button>Listen Now!</button>
-    <script src="/peerjs.min.js"></script>
+    <script src="peerjs.min.js"></script>
     <script>
         var createTimer = (initTime) => {
             let start = Date.now();
@@ -34,27 +34,40 @@
         // var latTimer;
 
         var btn = document.querySelector('button');
-        btn.addEventListener('click', () => {
-            const t = timer.getTime()
-            console.log(t)
-            vid.currentTime = t;
-            vid.play();
-        })
-
         var vid = document.querySelector('video');
+        btn.addEventListener('click', () => {
+            // const t = timer.getTime()
+            // console.log(t)
+            // vid.currentTime = t;
+            // vid.play();
+            getAudioFromHost('090909');
+        })
 
         // latTimer = createTimer(0);
 
         ///// TESTING AREA ///////
 
-        var peer = new Peer({host: '/', path: '/peerjs', port: 8080});
-        var conn = peer.connect('090909'); /// host id generated..
-        conn.on('error', console.log)
+        const getAudioFromHost = (hostID) => {
+            var peer = new Peer({host: 'localhost', path: '/peerjs', port: 8080, debug: 0});
+            peer.on('open', function(id){
+                console.log('open~~~')
+                peer.on('error', console.log)
 
-        conn.on('open', function(){
-            conn.send('hi!');
-        });
-
+                var conn = peer.connect(hostID); /// host id generated.. replace with what input has avalibel
+                conn.on('error', console.log)
+                conn.on('connection', console.log)
+                conn.on('data', function(data) { 
+                    console.log(59);// getting video data now!
+                }); 
+                conn.on('open', function(){
+                    // connected to peer!
+                });
+                console.log('wedwe')
+            });
+            peer.on('connection', () => {
+                console.log('~~~connectiuoins')
+            })
+        }
     </script>
 </body>
 
