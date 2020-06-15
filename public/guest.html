@@ -11,11 +11,11 @@
 </head>
 
 <body>
-    <video controls width="0" height="0">
-        <source src="/video_stream" type="video/mp4">
-        Sorry, your browser doesn't support embedded videos.
-    </video>
-    <button>Listen Now!</button>
+    <audio
+        controls
+            Your browser does not support the
+            <code>audio</code> element.
+    </audio>
     <script src="peerjs.min.js"></script>
     <script>
         var createTimer = (initTime) => {
@@ -34,14 +34,15 @@
         // var latTimer;
 
         var btn = document.querySelector('button');
-        var vid = document.querySelector('video');
-        btn.addEventListener('click', () => {
-            // const t = timer.getTime()
-            // console.log(t)
-            // vid.currentTime = t;
-            // vid.play();
-            getAudioFromHost('090909');
-        })
+        // var vid = document.querySelector('video');
+        // btn.addEventListener('click', () => {
+        //     // const t = timer.getTime()
+        //     // console.log(t)
+        //     // vid.currentTime = t;
+        //     // vid.play();
+        //     ;
+        // })
+        setTimeout(() => getAudioFromHost('090909'), 100)
 
         // latTimer = createTimer(0);
 
@@ -56,10 +57,24 @@
                 var conn = peer.connect(hostID); /// host id generated.. replace with what input has avalibel
                 conn.on('error', console.log)
                 conn.on('connection', console.log)
-                conn.on('data', function(data) { 
-                    console.log(59);// getting video data now!
-                }); 
-                conn.on('open', function(){
+                conn.on('call', function(call){
+                    call.answer(window.localStream);
+                });
+
+                peer.on('call', function(call){
+                    // Answer the call automatically (instead of prompting user) for demo purposes
+                    call.answer();
+                    call.on('stream', (stream) => {
+                        const audio = document.querySelector('audio');
+                        // debugger
+                        audio.srcObject = stream;
+                        audio.onloadedmetadata = function(e){
+                            console.log('now playing the audio');
+                            audio.play();
+                        }
+                    })
+                });
+                conn.on('open', function() {
                     // connected to peer!
                 });
                 console.log('wedwe')
