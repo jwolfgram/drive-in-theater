@@ -8,15 +8,19 @@
     <title>The HTML5 Herald</title>
     <meta name="description" content="The HTML5 Herald">
     <meta name="author" content="SitePoint">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <video controls width="250">
-        <source src="/video_stream?host=true" type="video/mp4">
+    <div class="container">
+        <video controls width="250">
+            <source src="/video_stream?host=true" type="video/mp4">
 
-        Sorry, your browser doesn't support embedded videos.
-    </video>
-    <input type="file" multiple>Select MP4 to Play</input>
+            Sorry, your browser doesn't support embedded videos.
+        </video>
+        <input type="file" multiple>Select MP4 to Play</input>
+    </div>
+
     <script src="peerjs.min.js"></script>
     <script>
         var vid = document.querySelector('video');
