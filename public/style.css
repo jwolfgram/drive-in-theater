@@ -4,9 +4,6 @@
     box-sizing: border-box;
 }
 
-:root {
-    --error-color: red;
-}
 
 body{
     background-color:#232322;
@@ -24,26 +21,49 @@ body{
     padding-bottom: 20px;
     text-align: center;
 }
+.container.success {
+    background-color: transparent;
+    border: none;
+    text-align: center;
+}
 .container label {
     color: white;
     font-family: 'Open Sans', sans-serif;
     font-size: 1.5em;
     visibility: visible;
 }
+.container.success label {
+    visibility: hidden;
+    display: none;
+}
 
-#inputCode {
+.container input {
     display: block;
     margin: 20px;
     font-size: 16px;
     visibility: visible;
 }
+.container.success input {
+    display: none;
+    visibility: hidden;
+}
 .container small {
     display: none;
     visibility: hidden;
 }
+.container.error small {
+    display: block;
+    visibility: visible;
+    color: red;
+    font-style: bold;
+}
 .container audio {
     display: none;
     visibility: collapse;
+}
+.container.success audio {
+    display: block;
+    visibility: visible;
 }
 
 .container button {
@@ -53,4 +73,8 @@ body{
     font-style: bold;
     background-color: lightgoldenrodyellow; 
     visibility: visible;
+}
+.container.success button {
+    visibility: hidden;
+    display: none;
 }
