@@ -21,54 +21,56 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/socket.io-stream.js"></script>
     <script>
-        // var createTimer = (initTime) => {
-        //     let start = Date.now();
-        //     const intTime = parseFloat(initTime)
-        //     const getTime = () => Date.now() - start;
+        var createTimer = (initTime) => {
+            let start = Date.now();
+            const intTime = parseFloat(initTime)
+            const getTime = () => Date.now() - start;
 
-        //     return {
-        //         getTime: () => ((getTime() / 1000) + intTime).toString(),
-        //         setLatency: (secs) => {
+            return {
+                getTime: () => ((getTime() / 1000) + intTime).toString(),
+                setLatency: (secs) => {
 
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
         // var timer;
         // var latTimer;
 
-        // var btn = document.querySelector('button');
-        // btn.addEventListener('click', () => {
-        //     const t = timer.getTime()
-        //     console.log(t)
-        //     vid.currentTime = t;
-        //     vid.play();
-        // })
-
-        // var vid = document.querySelector('video');
-
-
-        // setInterval(function(){ console.log(vid.currentTime) }, 3000);
+        var btn = document.querySelector('button');
+        var vid = document.querySelector('video');
+        btn.addEventListener('click', () => {
+            // const t = timer.getTime()
+            // console.log(t)
+            // vid.currentTime = t;
+            // vid.play();
+            getAudioFromHost('090909');
+        })
 
         // latTimer = createTimer(0);
-        // fetch('/videoTime').then((res) => res.text()).then((vidTime) => {
-        //     const t = parseFloat(latTimer.getTime())
-        //     const vTime = parseFloat(vidTime)
-        //     console.log(`t: ${typeof t}`)
-        //     timer = createTimer(vTime + t);
-        //     // vid.currentTime = vidTime;
-        //     // vid.play();
-        // }).catch((e) => {
-        //     console.log(e)
-        // })
 
         ///// TESTING AREA ///////
 
-        var socket = io.connect('/');
+        const getAudioFromHost = (hostID) => {
+            var peer = new Peer({ host: 'localhost', path: '/peerjs', port: 8080, debug: 0 });
+            peer.on('open', function (id) {
+                console.log('open~~~')
+                peer.on('error', console.log)
 
-        socket.on('connect', function () {
-            console.log('Connected!');
-        });
-
+                var conn = peer.connect(hostID); /// host id generated.. replace with what input has avalibel
+                conn.on('error', console.log)
+                conn.on('connection', console.log)
+                conn.on('data', function (data) {
+                    console.log(59);// getting video data now!
+                });
+                conn.on('open', function () {
+                    // connected to peer!
+                });
+                console.log('wedwe')
+            });
+            peer.on('connection', () => {
+                console.log('~~~connectiuoins')
+            })
+        }
     </script>
 </body>
 
