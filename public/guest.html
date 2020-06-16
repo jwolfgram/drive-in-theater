@@ -13,15 +13,14 @@
 
 <body>
     <div class="container">
-        <label for="codeEntry">Enter Code</label>
-        <input type="text" id="inputcode" placeholder="0000">
-        <small>Code not valid</small>
-        <audio src="" controls>
-            controls
-            Your browser does not support the
-            <code>audio</code> element.
-        </audio>
-        <button id="submit">Listen Now!</button>
+        <div id="code-view">
+            <label for="codeEntry">Enter Code</label>
+            <input type="text" id="inputcode" placeholder="0000">
+            <button id="submit">Listen Now!</button>
+        </div>
+        <div id="listen-view">
+            <audio src="" controls/>
+        </div>
     </div>
 
     <script src="peerjs.min.js"></script>

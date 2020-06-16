@@ -18,47 +18,51 @@
 
             Sorry, your browser doesn't support embedded videos.
         </video>
-        <input type="file" multiple>Select MP4 to Play</input>
+        <h3>Your Movie Code is: <span id="code-view"></span></h3>
+        <h5>Connected Peers: <span id="count">0</span></h5>
+        <hr/>
+        <div>
+            <label for="filesel" class="btn">Select MP4 Movie to Play</label>
+            <input id="filesel" type="file"/>
+        </div>
+
     </div>
 
     <script src="peerjs.min.js"></script>
     <script>
         var vid = document.querySelector('video');
-        var sel = document.querySelector('input');
-
-
-        // setInterval(function(){ console.log(vid.currentTime) }, 3000);
-
-
-
-
-        // var upTime = () => {
-        //     fetch(`/setVideoTime?time=${vid.currentTime}`)
-        //     // vid.currentTime = 5
-        // };
-        // vid.onseeking = () => upTime();
-        // function getBuffer(resolve) {
-        //     var reader = new FileReader();
-        //     reader.onload = function () {
-        //         var arrayBuffer = reader.result;
-        //         resolve(arrayBuffer);
-        //     }
-        //     reader.readAsArrayBuffer(fileData);
-        // }
+        var sel = document.querySelector('#filesel');
 
         const makeID = () => (Math.random().toString(36).substr(2, 6)).toUpperCase();
-        const peer = new Peer("090909", { host: 'localhost', path: '/peerjs', port: 8080, debug: 0 }); // later set to makeID for differnet movie sessions
-        let audioStream;
-        let aGuest;
+        const peer = new Peer(makeID(), { host: 'localhost', path: '/peerjs', port: 8080 }); // later set to makeID for differnet movie sessions
+        const peerIDs = [];
+        const setCount = () => {
+            document.getElementById('count').innerText = peerIDs.length
+        }
+ 
         peer.on('error', console.log)
         peer.on('open', function (id) {
             console.log(id) // display this id for connection id, this is called once established with server and avalible for guests
+            document.getElementById('code-view').innerText = id;
+
         });
         peer.on('connection', function (conn) {
-            console.log('got connection, now send movei....')
-            aGuest = conn // need to log all ids to 'call' for audio feed
-            //sendAudio(conn) // sendVideo will send current audio stream or hold clinets to send the audio stream.. is conn only one or all clients connected?
+            peerIDs.push(conn)
+            setCount()
+            
+            if (!vid.paused) {
+                const stream = vid.captureStream();
+                peer.call(conn.peer, stream) 
+            }
         });
+
+        peer.on('disconnected', function (conn) {
+            const index = array.indexOf(conn.peer);
+            if (index > -1) {
+                array.splice(index, 1);
+            }
+            setCount()
+        })
 
         sel.addEventListener("change", (e) => {
             // init for getting movie data
@@ -68,18 +72,17 @@
             readAsURL.onload = function () {
                 let urlE = readAsURL.result;
                 vid.src = urlE;
-                //sendAudio(arrBuff)
             }
             readAsURL.readAsDataURL(file)
 
         });
 
-        const play = () => {
+        vid.onplay = () => {
             const stream = vid.captureStream(); // technically... this is still video/audio
-            peer.call(aGuest.peer, stream) // this works though!
-        }
-
-        vid.onplay = () => play();
+            peerIDs.forEach((peerRef) => {
+                peer.call(peerRef.peer, stream) 
+            })
+        };
 
 
 

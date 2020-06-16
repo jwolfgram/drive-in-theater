@@ -57,10 +57,7 @@ body{
     color: red;
     font-style: bold;
 }
-.container audio {
-    display: none;
-    visibility: collapse;
-}
+
 .container.success audio {
     display: block;
     visibility: visible;
@@ -76,5 +73,10 @@ body{
 }
 .container.success button {
     visibility: hidden;
+    display: none;
+}
+
+
+#listen-view {
     display: none;
 }
